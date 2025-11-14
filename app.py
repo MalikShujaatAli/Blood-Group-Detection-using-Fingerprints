@@ -5,6 +5,8 @@ from flask import Flask, request, jsonify, render_template
 from werkzeug.utils import secure_filename
 import os
 from datetime import datetime
+import gc
+import tensorflow as tf
 
 # --- Global Variables Loaded Once at Server Startup ---
 MODEL_PATH = "fingerprint_bloodgroup_model.keras"
@@ -47,30 +49,42 @@ def predict_blood_group(image_bytes):
     if GLOBAL_MODEL is None:
         return "Error: Model not loaded.", 0.0
 
-    # 1. Decode image from bytes
-    # Convert image bytes to a numpy array, then decode as a grayscale image
-    nparr = np.frombuffer(image_bytes, np.uint8)
-    img = cv2.imdecode(nparr, cv2.IMREAD_GRAYSCALE)
+    try:
+        # 1. Decode image from bytes
+        nparr = np.frombuffer(image_bytes, np.uint8)
+        img = cv2.imdecode(nparr, cv2.IMREAD_GRAYSCALE)
 
-    if img is None:
-        return "Error: Could not decode image.", 0.0
+        if img is None:
+            return "Error: Could not decode image.", 0.0
 
-    # 2. Resize and Preprocess
-    img = cv2.resize(img, (IMG_SIZE, IMG_SIZE))
+        # 2. Resize and Preprocess
+        img = cv2.resize(img, (IMG_SIZE, IMG_SIZE))
+        
+        # 3. Reshape and Normalize: (1, 128, 128, 1) and scale to 0-1
+        input_array = img.reshape(1, IMG_SIZE, IMG_SIZE, 1).astype(np.float32) / 255.0
+        
+        # Free memory
+        del img, nparr
+        gc.collect()
+
+        # 4. Predict with memory optimization
+        with tf.device('/CPU:0'):
+            predictions = GLOBAL_MODEL.predict(input_array, verbose=0, batch_size=1)[0]
+        
+        # 5. Decode results
+        predicted_index = np.argmax(predictions)
+        predicted_class = CLASSES[predicted_index]
+        confidence = float(predictions[predicted_index] * 100)
+        
+        # Free memory
+        del input_array, predictions
+        gc.collect()
+
+        return predicted_class, confidence
     
-    # 3. Reshape and Normalize: (1, 128, 128, 1) and scale to 0-1
-    input_array = img.reshape(1, IMG_SIZE, IMG_SIZE, 1) / 255.0
-
-    # 4. Predict
-    # verbose=0 suppresses the prediction output log
-    predictions = GLOBAL_MODEL.predict(input_array, verbose=0)[0]
-    
-    # 5. Decode results
-    predicted_index = np.argmax(predictions)
-    predicted_class = CLASSES[predicted_index]
-    confidence = float(predictions[predicted_index] * 100)  # Convert to percentage
-
-    return predicted_class, confidence
+    except Exception as e:
+        print(f"Prediction error: {str(e)}")
+        return f"Error: Prediction failed - {str(e)}", 0.0
 
 @app.route('/')
 def index():
@@ -102,12 +116,16 @@ def api_predict():
         # Read image bytes
         image_bytes = file.read()
         
+        if not image_bytes:
+            return jsonify({'success': False, 'error': 'Empty file uploaded'}), 400
+        
         # Predict blood group
         predicted_class, confidence = predict_blood_group(image_bytes)
 
         # Check for errors in prediction
         if "Error" in predicted_class:
-            return jsonify({'success': False, 'error': predicted_class}), 400
+            print(f"Prediction error returned: {predicted_class}")
+            return jsonify({'success': False, 'error': predicted_class}), 500
 
         # Save uploaded file
         filename = secure_filename(file.filename)
@@ -117,7 +135,7 @@ def api_predict():
         file.seek(0)
         file.save(filepath)
 
-        return jsonify({
+        response = {
             'success': True,
             'blood_group': predicted_class,
             'confidence': f"{confidence:.2f}%",
@@ -126,9 +144,15 @@ def api_predict():
             'gender': gender,
             'contact': contact,
             'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        }), 200
+        }
+        
+        # Force garbage collection
+        gc.collect()
+        
+        return jsonify(response), 200
 
     except Exception as e:
+        print(f"API error: {str(e)}")
         return jsonify({'success': False, 'error': f'Server error: {str(e)}'}), 500
 
 @app.route('/health', methods=['GET'])
