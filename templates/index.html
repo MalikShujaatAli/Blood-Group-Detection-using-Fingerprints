@@ -815,7 +815,10 @@
             canvas.height = video.videoHeight;
 
             const ctx = canvas.getContext('2d');
-            ctx.drawImage(video, 0, 0);
+            // FIX: Flip back the horizontally mirrored video (undo CSS transform scaleX(-1))
+            ctx.scale(-1, 1);
+            ctx.drawImage(video, -video.videoWidth, 0);
+            ctx.scale(-1, 1);  // Reset scale
 
             // Grayscale
             const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
