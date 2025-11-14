@@ -415,13 +415,33 @@
                 <div class="form-section hidden" id="uploadSection">
                     <div class="section-title">Upload Fingerprint Image</div>
 
-                    <div class="file-upload">
+                    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                        <label style="flex: 1;">
+                            <input type="radio" name="imageSource" value="upload" checked onchange="switchImageSource()"> 📤 Upload
+                        </label>
+                        <label style="flex: 1;">
+                            <input type="radio" name="imageSource" value="camera" onchange="switchImageSource()"> 📷 Camera
+                        </label>
+                    </div>
+
+                    <!-- File Upload Mode -->
+                    <div id="uploadMode" class="file-upload">
                         <input type="file" id="fileInput" name="file" accept="image/*" required onchange="handleFileSelect(event)">
                         <label for="fileInput" class="file-upload-label" id="fileLabel">
                             📷 Click to upload or drag and drop
                             <br>
                             <small>PNG, JPG, GIF, BMP or TIFF (preferably grayscale)</small>
                         </label>
+                    </div>
+
+                    <!-- Camera Mode -->
+                    <div id="cameraMode" class="hidden" style="text-align: center;">
+                        <video id="cameraVideo" style="width: 100%; max-width: 400px; border-radius: 8px; margin-bottom: 15px;"></video>
+                        <div class="form-row">
+                            <button type="button" class="btn-secondary" onclick="startCamera()" id="startCameraBtn">🎬 Start Camera</button>
+                            <button type="button" class="btn-primary" onclick="captureFromCamera()" id="captureBtn" disabled>📸 Capture</button>
+                        </div>
+                        <p id="cameraStatus" style="margin-top: 10px; font-size: 12px; color: #666;"></p>
                     </div>
 
                     <div class="file-name" id="fileName"></div>
@@ -551,6 +571,92 @@
             checkButton.disabled = false;
         }
 
+        let cameraStream = null;
+        let currentImageSource = 'upload'; // track which mode is active
+
+        function switchImageSource() {
+            const source = document.querySelector('input[name="imageSource"]:checked').value;
+            currentImageSource = source;
+            
+            const uploadMode = document.getElementById('uploadMode');
+            const cameraMode = document.getElementById('cameraMode');
+            
+            if (source === 'camera') {
+                uploadMode.classList.add('hidden');
+                cameraMode.classList.remove('hidden');
+            } else {
+                uploadMode.classList.remove('hidden');
+                cameraMode.classList.add('hidden');
+                stopCamera();
+            }
+        }
+
+        async function startCamera() {
+            try {
+                document.getElementById('cameraStatus').textContent = '⏳ Requesting camera access...';
+                cameraStream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } }
+                });
+                const video = document.getElementById('cameraVideo');
+                video.srcObject = cameraStream;
+                video.play();
+                document.getElementById('startCameraBtn').disabled = true;
+                document.getElementById('captureBtn').disabled = false;
+                document.getElementById('cameraStatus').textContent = '✅ Camera ready. Frame your thumb and tap Capture.';
+            } catch (error) {
+                document.getElementById('cameraStatus').textContent = `❌ ${error.message}`;
+                showError('Camera access denied. Please use Upload mode.');
+            }
+        }
+
+        function stopCamera() {
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(track => track.stop());
+                cameraStream = null;
+            }
+            document.getElementById('captureBtn').disabled = true;
+            document.getElementById('startCameraBtn').disabled = false;
+            document.getElementById('cameraStatus').textContent = '';
+        }
+
+        function captureFromCamera() {
+            const video = document.getElementById('cameraVideo');
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0);
+            
+            // Convert to grayscale
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imageData.data;
+            for (let i = 0; i < data.length; i += 4) {
+                const gray = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
+                data[i] = data[i + 1] = data[i + 2] = gray;
+            }
+            ctx.putImageData(imageData, 0, 0);
+            
+            // Create a dummy file object from canvas
+            canvas.toBlob((blob) => {
+                const file = new File([blob], 'camera_capture.png', { type: 'image/png' });
+                fileInput.files = new DataTransfer().items.add(file) || { 0: file, length: 1 };
+                
+                // Simulate file selection
+                fileName.textContent = '✓ Camera capture: ' + new Date().toLocaleTimeString();
+                fileName.classList.add('show');
+                
+                imagePreview.src = canvas.toDataURL();
+                imagePreview.classList.add('show');
+                
+                checkButton.disabled = false;
+                document.getElementById('cameraStatus').textContent = '✅ Image captured! Tap "Check Blood Group" to analyze.';
+                
+                stopCamera();
+                switchImageSource(); // Switch back to show preview
+            });
+        }
+
         function proceedToUpload() {
             const name = document.getElementById('name').value.trim();
             const age = document.getElementById('age').value.trim();
@@ -595,7 +701,14 @@
                 method: 'POST',
                 body: formData
             })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        return response.text().then(text => {
+                            throw new Error(`Server error (${response.status}): ${text.substring(0, 100)}`);
+                        });
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     loadingSection.classList.remove('show');
                     if (data.success) {
@@ -610,6 +723,7 @@
                     loadingSection.classList.remove('show');
                     showError('Error: ' + error.message);
                     uploadSection.classList.remove('hidden');
+                    console.error('Fetch error:', error);
                 });
         }
 

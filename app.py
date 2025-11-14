@@ -36,12 +36,80 @@ def allowed_file(filename):
     """Check if file has allowed extension."""
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-def predict_blood_group(image_bytes):
+def detect_and_crop_thumb(image_array):
+    """
+    Detect the thumb region from image and crop to optimal size.
+    Uses edge detection and contour analysis.
+    
+    Args:
+        image_array: Grayscale numpy array (any size)
+    
+    Returns:
+        Cropped and resized 128x128 image, or None if detection fails
+    """
+    try:
+        # Ensure image is grayscale
+        if len(image_array.shape) == 3:
+            image_array = cv2.cvtColor(image_array, cv2.COLOR_BGR2GRAY)
+        
+        h, w = image_array.shape
+        
+        # 1. Binary threshold to isolate fingerprint area
+        binary = cv2.adaptiveThreshold(image_array, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, 
+                                       cv2.THRESH_BINARY, 15, 2)
+        
+        # 2. Morphological operations to clean up
+        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (7, 7))
+        binary = cv2.morphologyEx(binary, cv2.MORPH_CLOSE, kernel)
+        binary = cv2.morphologyEx(binary, cv2.MORPH_OPEN, kernel)
+        
+        # 3. Find contours
+        contours, _ = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        
+        if not contours:
+            return None
+        
+        # 4. Find largest contour (thumb region)
+        largest_contour = max(contours, key=cv2.contourArea)
+        area = cv2.contourArea(largest_contour)
+        
+        # Sanity check: contour should be reasonable size
+        if area < (h * w * 0.05):  # At least 5% of image
+            return None
+        
+        # 5. Get bounding rectangle
+        x, y, w_bbox, h_bbox = cv2.boundingRect(largest_contour)
+        
+        # 6. Add padding and center the crop
+        padding = max(w_bbox, h_bbox) * 0.1
+        x = max(0, int(x - padding))
+        y = max(0, int(y - padding))
+        w_bbox = min(w - x, int(w_bbox + 2 * padding))
+        h_bbox = min(h - y, int(h_bbox + 2 * padding))
+        
+        # 7. Crop to square region
+        size = max(w_bbox, h_bbox)
+        x_end = min(w, x + size)
+        y_end = min(h, y + size)
+        
+        cropped = image_array[y:y_end, x:x_end]
+        
+        # 8. Resize to model input size
+        resized = cv2.resize(cropped, (IMG_SIZE, IMG_SIZE))
+        
+        return resized
+    
+    except Exception as e:
+        print(f"Thumb detection error: {str(e)}")
+        return None
+
+def predict_blood_group(image_bytes, use_thumb_detection=True):
     """
     Handles preprocessing and prediction for a single uploaded image.
 
     Args:
         image_bytes: The raw image data (e.g., a byte stream from a web upload).
+        use_thumb_detection: Whether to use smart thumb detection/cropping
 
     Returns:
         The predicted blood group and its confidence score.
@@ -57,8 +125,17 @@ def predict_blood_group(image_bytes):
         if img is None:
             return "Error: Could not decode image.", 0.0
 
-        # 2. Resize and Preprocess
-        img = cv2.resize(img, (IMG_SIZE, IMG_SIZE))
+        # 2. Optional: Smart thumb detection and cropping for better accuracy
+        if use_thumb_detection:
+            detected_thumb = detect_and_crop_thumb(img)
+            if detected_thumb is not None:
+                img = detected_thumb
+            else:
+                # Fallback to simple resizing if detection fails
+                img = cv2.resize(img, (IMG_SIZE, IMG_SIZE))
+        else:
+            # Simple resize without detection
+            img = cv2.resize(img, (IMG_SIZE, IMG_SIZE))
         
         # 3. Reshape and Normalize: (1, 128, 128, 1) and scale to 0-1
         input_array = img.reshape(1, IMG_SIZE, IMG_SIZE, 1).astype(np.float32) / 255.0
