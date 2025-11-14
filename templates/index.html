@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fingerprint Blood Group Detection</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 600px;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .form-container {
+            padding: 30px;
+        }
+
+        .form-section {
+            margin-bottom: 25px;
+        }
+
+        .form-section.hidden {
+            display: none;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #555;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="email"],
+        select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        input[type="email"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .file-upload {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .file-upload input[type="file"] {
+            display: none;
+        }
+
+        .file-upload-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 30px;
+            border: 2px dashed #667eea;
+            border-radius: 5px;
+            background-color: #f8f9ff;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            color: #667eea;
+        }
+
+        .file-upload-label:hover {
+            background-color: #f0f2ff;
+            border-color: #764ba2;
+        }
+
+        .file-upload-label.dragover {
+            background-color: #f0f2ff;
+            border-color: #764ba2;
+        }
+
+        .file-name {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #e8f5e9;
+            border-radius: 5px;
+            color: #2e7d32;
+            font-size: 13px;
+            display: none;
+        }
+
+        .file-name.show {
+            display: block;
+        }
+
+        .image-preview {
+            margin-top: 15px;
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .image-preview.show {
+            display: block;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background-color: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background-color: #d0d0d0;
+        }
+
+        .result-container {
+            display: none;
+        }
+
+        .result-container.show {
+            display: block;
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .result-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 15px;
+        }
+
+        .result-item label {
+            font-weight: 500;
+            margin-bottom: 0;
+        }
+
+        .result-value {
+            font-weight: 600;
+        }
+
+        .blood-group-display {
+            font-size: 32px;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+        }
+
+        .confidence {
+            font-size: 14px;
+            text-align: center;
+            opacity: 0.95;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid rgba(102, 126, 234, 0.2);
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            background-color: #ffebee;
+            border: 1px solid #ef5350;
+            color: #c62828;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .error.show {
+            display: block;
+        }
+
+        .success {
+            background-color: #e8f5e9;
+            border: 1px solid #66bb6a;
+            color: #2e7d32;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .success.show {
+            display: block;
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+
+        .step {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 13px;
+            font-weight: 600;
+            background-color: #f0f0f0;
+            color: #999;
+        }
+
+        .step.active {
+            background-color: #667eea;
+            color: white;
+        }
+
+        .step.completed {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .blood-group-display {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🩸 Blood Group Detection</h1>
+            <p>Using Fingerprint Analysis</p>
+        </div>
+
+        <div class="form-container">
+            <div class="step-indicator">
+                <div class="step active" id="step1">Personal Info</div>
+                <div class="step" id="step2">Upload Image</div>
+                <div class="step" id="step3">Results</div>
+            </div>
+
+            <div class="error" id="errorMessage"></div>
+            <div class="success" id="successMessage"></div>
+
+            <!-- Personal Information Form -->
+            <form id="userForm">
+                <div class="form-section" id="personalInfoSection">
+                    <div class="section-title">Personal Information</div>
+
+                    <div class="form-group">
+                        <label for="name">Full Name *</label>
+                        <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="age">Age *</label>
+                            <input type="number" id="age" name="age" placeholder="Enter your age" min="1" max="120" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="gender">Gender *</label>
+                            <select id="gender" name="gender" required>
+                                <option value="">Select Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contact">Contact Number *</label>
+                        <input type="text" id="contact" name="contact" placeholder="Enter your contact number" required>
+                    </div>
+
+                    <button type="button" class="btn-primary" onclick="proceedToUpload()">Next: Upload Image</button>
+                </div>
+
+                <!-- File Upload Section -->
+                <div class="form-section hidden" id="uploadSection">
+                    <div class="section-title">Upload Fingerprint Image</div>
+
+                    <div class="file-upload">
+                        <input type="file" id="fileInput" name="file" accept="image/*" required onchange="handleFileSelect(event)">
+                        <label for="fileInput" class="file-upload-label" id="fileLabel">
+                            📷 Click to upload or drag and drop
+                            <br>
+                            <small>PNG, JPG, GIF, BMP or TIFF (preferably grayscale)</small>
+                        </label>
+                    </div>
+
+                    <div class="file-name" id="fileName"></div>
+
+                    <img id="imagePreview" class="image-preview" alt="Preview">
+
+                    <div class="form-row">
+                        <button type="button" class="btn-secondary" onclick="backToInfo()">Back</button>
+                        <button type="button" class="btn-primary" id="checkButton" onclick="submitForm()" disabled>Check Blood Group</button>
+                    </div>
+                </div>
+
+                <!-- Loading Section -->
+                <div class="loading" id="loadingSection">
+                    <div class="spinner"></div>
+                    <p>Analyzing fingerprint...</p>
+                </div>
+
+                <!-- Results Section -->
+                <div class="result-container" id="resultSection">
+                    <div class="result-card">
+                        <div class="result-title">Detection Results</div>
+
+                        <div class="result-item">
+                            <label>Predicted Blood Group:</label>
+                            <span class="result-value" id="resultBloodGroup">--</span>
+                        </div>
+
+                        <div class="result-item">
+                            <label>Confidence:</label>
+                            <span class="result-value" id="resultConfidence">--</span>
+                        </div>
+
+                        <div class="blood-group-display" id="bloodGroupBig">--</div>
+
+                        <div class="confidence" id="confidenceText"></div>
+                    </div>
+
+                    <div class="result-card" style="background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);">
+                        <div class="result-title">Personal Details</div>
+
+                        <div class="result-item">
+                            <label>Name:</label>
+                            <span class="result-value" id="resultName">--</span>
+                        </div>
+
+                        <div class="result-item">
+                            <label>Age:</label>
+                            <span class="result-value" id="resultAge">--</span>
+                        </div>
+
+                        <div class="result-item">
+                            <label>Gender:</label>
+                            <span class="result-value" id="resultGender">--</span>
+                        </div>
+
+                        <div class="result-item">
+                            <label>Contact:</label>
+                            <span class="result-value" id="resultContact">--</span>
+                        </div>
+
+                        <div class="result-item">
+                            <label>Date & Time:</label>
+                            <span class="result-value" id="resultTimestamp">--</span>
+                        </div>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="button" class="btn-secondary" onclick="startNew()">Start New Test</button>
+                        <button type="button" class="btn-primary" onclick="downloadReport()">📥 Download Report</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('userForm');
+        const personalInfoSection = document.getElementById('personalInfoSection');
+        const uploadSection = document.getElementById('uploadSection');
+        const resultSection = document.getElementById('resultSection');
+        const loadingSection = document.getElementById('loadingSection');
+        const fileInput = document.getElementById('fileInput');
+        const fileLabel = document.getElementById('fileLabel');
+        const fileName = document.getElementById('fileName');
+        const imagePreview = document.getElementById('imagePreview');
+        const errorMessage = document.getElementById('errorMessage');
+        const successMessage = document.getElementById('successMessage');
+        const checkButton = document.getElementById('checkButton');
+
+        // Drag and drop functionality
+        fileLabel.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            fileLabel.classList.add('dragover');
+        });
+
+        fileLabel.addEventListener('dragleave', () => {
+            fileLabel.classList.remove('dragover');
+        });
+
+        fileLabel.addEventListener('drop', (e) => {
+            e.preventDefault();
+            fileLabel.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                fileInput.files = files;
+                handleFileSelect({ target: { files } });
+            }
+        });
+
+        function handleFileSelect(event) {
+            const files = event.target.files;
+            if (files.length === 0) return;
+
+            const file = files[0];
+            fileName.textContent = `✓ File selected: ${file.name}`;
+            fileName.classList.add('show');
+
+            // Show image preview
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                imagePreview.src = e.target.result;
+                imagePreview.classList.add('show');
+            };
+            reader.readAsDataURL(file);
+
+            checkButton.disabled = false;
+        }
+
+        function proceedToUpload() {
+            const name = document.getElementById('name').value.trim();
+            const age = document.getElementById('age').value.trim();
+            const gender = document.getElementById('gender').value.trim();
+            const contact = document.getElementById('contact').value.trim();
+
+            if (!name || !age || !gender || !contact) {
+                showError('Please fill in all required fields');
+                return;
+            }
+
+            personalInfoSection.classList.add('hidden');
+            uploadSection.classList.remove('hidden');
+            updateSteps(2);
+            clearError();
+        }
+
+        function backToInfo() {
+            uploadSection.classList.add('hidden');
+            personalInfoSection.classList.remove('hidden');
+            updateSteps(1);
+        }
+
+        function submitForm() {
+            if (!fileInput.files || fileInput.files.length === 0) {
+                showError('Please select an image file');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('name', document.getElementById('name').value);
+            formData.append('age', document.getElementById('age').value);
+            formData.append('gender', document.getElementById('gender').value);
+            formData.append('contact', document.getElementById('contact').value);
+            formData.append('file', fileInput.files[0]);
+
+            uploadSection.classList.add('hidden');
+            loadingSection.classList.add('show');
+            clearError();
+
+            fetch('/predict', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    loadingSection.classList.remove('show');
+                    if (data.success) {
+                        displayResults(data);
+                        updateSteps(3);
+                    } else {
+                        showError(data.error || 'Prediction failed');
+                        uploadSection.classList.remove('hidden');
+                    }
+                })
+                .catch(error => {
+                    loadingSection.classList.remove('show');
+                    showError('Error: ' + error.message);
+                    uploadSection.classList.remove('hidden');
+                });
+        }
+
+        function displayResults(data) {
+            document.getElementById('resultBloodGroup').textContent = data.blood_group;
+            document.getElementById('resultConfidence').textContent = data.confidence;
+            document.getElementById('bloodGroupBig').textContent = data.blood_group;
+            document.getElementById('confidenceText').textContent = `Confidence: ${data.confidence}`;
+            document.getElementById('resultName').textContent = data.name;
+            document.getElementById('resultAge').textContent = data.age;
+            document.getElementById('resultGender').textContent = data.gender;
+            document.getElementById('resultContact').textContent = data.contact;
+            document.getElementById('resultTimestamp').textContent = data.timestamp;
+
+            resultSection.classList.add('show');
+        }
+
+        function startNew() {
+            form.reset();
+            fileInput.value = '';
+            imagePreview.src = '';
+            imagePreview.classList.remove('show');
+            fileName.classList.remove('show');
+            resultSection.classList.remove('show');
+            personalInfoSection.classList.remove('hidden');
+            checkButton.disabled = true;
+            updateSteps(1);
+            clearError();
+        }
+
+        function downloadReport() {
+            const bloodGroup = document.getElementById('resultBloodGroup').textContent;
+            const name = document.getElementById('resultName').textContent;
+            const age = document.getElementById('resultAge').textContent;
+            const gender = document.getElementById('resultGender').textContent;
+            const contact = document.getElementById('resultContact').textContent;
+            const timestamp = document.getElementById('resultTimestamp').textContent;
+            const confidence = document.getElementById('resultConfidence').textContent;
+
+            const reportContent = `
+BLOOD GROUP DETECTION REPORT
+============================
+Generated: ${timestamp}
+
+DETECTION RESULTS
+-----------------
+Predicted Blood Group: ${bloodGroup}
+Confidence: ${confidence}
+
+PERSONAL DETAILS
+----------------
+Name: ${name}
+Age: ${age}
+Gender: ${gender}
+Contact: ${contact}
+
+Note: This report is generated by Fingerprint Based Blood Group Detection System.
+Please consult a medical professional for clinical purposes.
+            `.trim();
+
+            const blob = new Blob([reportContent], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Blood_Group_Report_${Date.now()}.txt`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.classList.add('show');
+        }
+
+        function clearError() {
+            errorMessage.classList.remove('show');
+        }
+
+        function updateSteps(currentStep) {
+            document.getElementById('step1').classList.toggle('active', currentStep === 1);
+            document.getElementById('step1').classList.toggle('completed', currentStep > 1);
+
+            document.getElementById('step2').classList.toggle('active', currentStep === 2);
+            document.getElementById('step2').classList.toggle('completed', currentStep > 2);
+
+            document.getElementById('step3').classList.toggle('active', currentStep === 3);
+        }
+    </script>
+</body>
+</html>
