@@ -239,5 +239,15 @@ def health_check():
     return jsonify({'status': 'ok', 'model': model_status}), 200
 
 if __name__ == '__main__':
+    # For local development with LocalTunnel sharing
     port = int(os.environ.get('PORT', 5000))
-    app.run(debug=False, host='0.0.0.0', port=port)
+    
+    # Use threaded mode for better local performance
+    # This allows multiple concurrent requests
+    app.run(
+        debug=False,
+        host='0.0.0.0',  # Listen on all network interfaces
+        port=port,
+        threaded=True,   # Enable threading for concurrent requests
+        use_reloader=False  # Disable reloader (causes issues with model loading)
+    )
