@@ -23,59 +23,52 @@
 
         .container {
             background: white;
-            border-radius: 10px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             width: 100%;
-            max-width: 600px;
+            max-width: 900px;
             overflow: hidden;
         }
 
         .header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 30px;
+            padding: 40px 30px;
             text-align: center;
         }
 
         .header h1 {
-            font-size: 28px;
+            font-size: 32px;
             margin-bottom: 10px;
+            font-weight: 700;
         }
 
         .header p {
             font-size: 14px;
-            opacity: 0.9;
+            opacity: 0.95;
         }
 
         .form-container {
-            padding: 30px;
-        }
-
-        .form-section {
-            margin-bottom: 25px;
-        }
-
-        .form-section.hidden {
-            display: none;
+            padding: 40px;
         }
 
         .section-title {
-            font-size: 16px;
-            font-weight: 600;
+            font-size: 18px;
+            font-weight: 700;
             color: #333;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #667eea;
+            margin-bottom: 25px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid #667eea;
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 16px;
         }
 
         label {
             display: block;
-            margin-bottom: 6px;
-            font-weight: 500;
+            margin-bottom: 8px;
+            font-weight: 600;
             color: #555;
             font-size: 14px;
         }
@@ -85,11 +78,12 @@
         input[type="email"],
         select {
             width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            padding: 12px 14px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
             font-size: 14px;
-            transition: border-color 0.3s;
+            transition: all 0.3s;
+            font-family: inherit;
         }
 
         input[type="text"]:focus,
@@ -105,93 +99,30 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
+            margin-bottom: 16px;
         }
 
-        .file-upload {
-            position: relative;
-            margin-bottom: 15px;
-        }
-
-        .file-upload input[type="file"] {
-            display: none;
-        }
-
-        .file-upload-label {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            padding: 30px;
-            border: 2px dashed #667eea;
-            border-radius: 5px;
-            background-color: #f8f9ff;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: 500;
-            color: #667eea;
-        }
-
-        .file-upload-label:hover {
-            background-color: #f0f2ff;
-            border-color: #764ba2;
-        }
-
-        .file-upload-label.dragover {
-            background-color: #f0f2ff;
-            border-color: #764ba2;
-        }
-
-        .file-name {
-            margin-top: 10px;
-            padding: 10px;
-            background-color: #e8f5e9;
-            border-radius: 5px;
-            color: #2e7d32;
-            font-size: 13px;
-            display: none;
-        }
-
-        .file-name.show {
-            display: block;
-        }
-
-        .image-preview {
-            margin-top: 15px;
-            max-width: 100%;
-            height: auto;
-            border-radius: 5px;
-            display: none;
-        }
-
-        .image-preview.show {
-            display: block;
-        }
-
-        .button-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 25px;
-        }
-
-        button {
-            flex: 1;
-            padding: 12px 20px;
+        .btn-primary, .btn-secondary {
+            padding: 12px 24px;
             border: none;
-            border-radius: 5px;
-            font-size: 16px;
+            border-radius: 8px;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
+            text-align: center;
+            display: inline-block;
         }
 
         .btn-primary {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
+            width: 100%;
         }
 
         .btn-primary:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
         }
 
         .btn-primary:disabled {
@@ -200,14 +131,226 @@
         }
 
         .btn-secondary {
-            background-color: #e0e0e0;
+            background: #f0f0f0;
             color: #333;
+            border: 2px solid #ddd;
+            width: 100%;
         }
 
-        .btn-secondary:hover {
-            background-color: #d0d0d0;
+        .btn-secondary:hover:not(:disabled) {
+            background: #e0e0e0;
+            transform: translateY(-2px);
         }
 
+        .hidden {
+            display: none !important;
+        }
+
+        /* Dual Panel Layout */
+        .dual-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .dual-panel {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+
+        .panel {
+            border: 2px solid #f0f0f0;
+            border-radius: 12px;
+            padding: 25px;
+            background: #fafafa;
+            transition: all 0.3s;
+        }
+
+        .panel.active {
+            border-color: #667eea;
+            background: #f8f9ff;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+
+        .panel-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .panel-icon {
+            font-size: 24px;
+        }
+
+        /* Upload Panel */
+        .file-upload {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px 20px;
+            border: 2px dashed #667eea;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .file-upload.dragover {
+            background: #f8f9ff;
+            border-color: #764ba2;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+
+        .file-upload input[type="file"] {
+            display: none;
+        }
+
+        .file-upload-label {
+            cursor: pointer;
+            font-weight: 500;
+            color: #667eea;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .file-upload-label small {
+            display: block;
+            color: #999;
+            font-weight: 400;
+            margin-top: 5px;
+        }
+
+        .file-name {
+            margin-top: 12px;
+            font-size: 13px;
+            color: #28a745;
+            font-weight: 600;
+            display: none;
+        }
+
+        .file-name.show {
+            display: block;
+        }
+
+        /* Camera Panel */
+        #cameraContainer {
+            position: relative;
+            background: #000;
+            border-radius: 10px;
+            overflow: hidden;
+            aspect-ratio: 4/3;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #cameraVideo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1);
+        }
+
+        .camera-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .camera-controls button {
+            flex: 1;
+            padding: 10px 12px;
+            font-size: 13px;
+        }
+
+        .camera-status {
+            font-size: 12px;
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 6px;
+            margin-top: 10px;
+            text-align: center;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+        }
+
+        .camera-status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .camera-status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Image Preview */
+        .image-preview {
+            width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+            margin: 15px 0;
+            display: none;
+            object-fit: contain;
+            background: #f0f0f0;
+        }
+
+        .image-preview.show {
+            display: block;
+        }
+
+        /* Loading */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 60px 30px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #f0f0f0;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading p {
+            color: #667eea;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .loading small {
+            display: block;
+            color: #999;
+            margin-top: 10px;
+        }
+
+        /* Results */
         .result-container {
             display: none;
         }
@@ -219,16 +362,16 @@
         .result-card {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 25px;
-            border-radius: 8px;
+            padding: 30px;
+            border-radius: 12px;
             margin-bottom: 20px;
         }
 
         .result-title {
             font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
             border-bottom: 2px solid rgba(255, 255, 255, 0.3);
         }
 
@@ -236,127 +379,140 @@
             display: flex;
             justify-content: space-between;
             margin-bottom: 12px;
-            font-size: 15px;
+            font-size: 14px;
         }
 
         .result-item label {
-            font-weight: 500;
-            margin-bottom: 0;
+            font-weight: 600;
+            opacity: 0.9;
+            margin: 0;
         }
 
         .result-value {
-            font-weight: 600;
+            font-weight: 700;
+            font-size: 16px;
+            margin: 0;
         }
 
         .blood-group-display {
-            font-size: 32px;
-            font-weight: bold;
+            font-size: 56px;
+            font-weight: 700;
             text-align: center;
             margin: 20px 0;
-            padding: 15px;
-            background-color: rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
 
         .confidence {
-            font-size: 14px;
             text-align: center;
-            opacity: 0.95;
+            font-size: 18px;
+            font-weight: 600;
+            margin-top: 15px;
         }
 
-        .loading {
-            display: none;
-            text-align: center;
-            padding: 30px;
-        }
-
-        .loading.show {
-            display: block;
-        }
-
-        .spinner {
-            border: 4px solid rgba(102, 126, 234, 0.2);
-            border-top: 4px solid #667eea;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 15px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .error {
-            background-color: #ffebee;
-            border: 1px solid #ef5350;
-            color: #c62828;
-            padding: 12px;
-            border-radius: 5px;
-            margin-bottom: 15px;
-            display: none;
-        }
-
-        .error.show {
-            display: block;
-        }
-
-        .success {
-            background-color: #e8f5e9;
-            border: 1px solid #66bb6a;
-            color: #2e7d32;
-            padding: 12px;
-            border-radius: 5px;
-            margin-bottom: 15px;
-            display: none;
-        }
-
-        .success.show {
-            display: block;
-        }
-
-        .step-indicator {
+        /* Steps Indicator */
+        .steps {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 20px;
-            gap: 10px;
+            margin-bottom: 30px;
+            position: relative;
         }
 
         .step {
             flex: 1;
             text-align: center;
-            padding: 10px;
-            border-radius: 5px;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
-            background-color: #f0f0f0;
             color: #999;
         }
 
-        .step.active {
-            background-color: #667eea;
-            color: white;
+        .step::before {
+            content: '';
+            display: inline-block;
+            width: 28px;
+            height: 28px;
+            border: 2px solid #ddd;
+            border-radius: 50%;
+            margin-bottom: 8px;
+            line-height: 28px;
+            background: white;
         }
 
-        .step.completed {
-            background-color: #4caf50;
+        .step.active::before {
+            background: #667eea;
             color: white;
+            border-color: #667eea;
+        }
+
+        .step.completed::before {
+            background: #28a745;
+            border-color: #28a745;
+        }
+
+        /* Error & Success Messages */
+        .error-message, .success-message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .success-message.show {
+            display: block;
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 25px;
         }
 
         @media (max-width: 600px) {
-            .form-row {
-                grid-template-columns: 1fr;
+            .form-container {
+                padding: 20px;
+            }
+
+            .header {
+                padding: 30px 20px;
             }
 
             .header h1 {
                 font-size: 24px;
             }
 
-            .blood-group-display {
-                font-size: 28px;
+            .dual-panel {
+                grid-template-columns: 1fr;
             }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .section-subtitle {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        #noCameraPreview {
+            padding: 40px 20px;
+            text-align: center;
+            color: #999;
+            font-size: 13px;
         }
     </style>
 </head>
@@ -364,34 +520,36 @@
     <div class="container">
         <div class="header">
             <h1>🩸 Blood Group Detection</h1>
-            <p>Using Fingerprint Analysis</p>
+            <p>Fingerprint-based analysis with AI precision</p>
         </div>
 
         <div class="form-container">
-            <div class="step-indicator">
-                <div class="step active" id="step1">Personal Info</div>
-                <div class="step" id="step2">Upload Image</div>
-                <div class="step" id="step3">Results</div>
+            <div class="error-message" id="errorMessage"></div>
+            <div class="success-message" id="successMessage"></div>
+
+            <div class="steps">
+                <div class="step active" id="step1">Step 1<br>Info</div>
+                <div class="step" id="step2">Step 2<br>Image</div>
+                <div class="step" id="step3">Step 3<br>Results</div>
             </div>
 
-            <div class="error" id="errorMessage"></div>
-            <div class="success" id="successMessage"></div>
-
-            <!-- Personal Information Form -->
             <form id="userForm">
+                <!-- Personal Information Section -->
                 <div class="form-section" id="personalInfoSection">
-                    <div class="section-title">Personal Information</div>
-
-                    <div class="form-group">
-                        <label for="name">Full Name *</label>
-                        <input type="text" id="name" name="name" placeholder="Enter your full name" required>
-                    </div>
+                    <div class="section-title">👤 Personal Information</div>
 
                     <div class="form-row">
+                        <div class="form-group">
+                            <label for="name">Full Name *</label>
+                            <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+                        </div>
                         <div class="form-group">
                             <label for="age">Age *</label>
                             <input type="number" id="age" name="age" placeholder="Enter your age" min="1" max="120" required>
                         </div>
+                    </div>
+
+                    <div class="form-row">
                         <div class="form-group">
                             <label for="gender">Gender *</label>
                             <select id="gender" name="gender" required>
@@ -401,72 +559,88 @@
                                 <option value="Other">Other</option>
                             </select>
                         </div>
+                        <div class="form-group">
+                            <label for="contact">Contact Number *</label>
+                            <input type="text" id="contact" name="contact" placeholder="Your contact number" required>
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="contact">Contact Number *</label>
-                        <input type="text" id="contact" name="contact" placeholder="Enter your contact number" required>
-                    </div>
-
-                    <button type="button" class="btn-primary" onclick="proceedToUpload()">Next: Upload Image</button>
+                    <button type="button" class="btn-primary" onclick="proceedToUpload()">Next: Capture Image</button>
                 </div>
 
-                <!-- File Upload Section -->
+                <!-- Image Capture Section -->
                 <div class="form-section hidden" id="uploadSection">
-                    <div class="section-title">Upload Fingerprint Image</div>
+                    <div class="section-title">📸 Capture Fingerprint</div>
+                    <p class="section-subtitle">Choose upload or camera - both use intelligent thumb detection for maximum accuracy</p>
 
-                    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-                        <label style="flex: 1;">
-                            <input type="radio" name="imageSource" value="upload" checked onchange="switchImageSource()"> 📤 Upload
-                        </label>
-                        <label style="flex: 1;">
-                            <input type="radio" name="imageSource" value="camera" onchange="switchImageSource()"> 📷 Camera
-                        </label>
-                    </div>
+                    <div class="dual-panel">
+                        <!-- Upload Panel -->
+                        <div class="panel active" id="uploadPanel">
+                            <div class="panel-title">
+                                <span class="panel-icon">📤</span>
+                                <span>Upload Image</span>
+                            </div>
 
-                    <!-- File Upload Mode -->
-                    <div id="uploadMode" class="file-upload">
-                        <input type="file" id="fileInput" name="file" accept="image/*" required onchange="handleFileSelect(event)">
-                        <label for="fileInput" class="file-upload-label" id="fileLabel">
-                            📷 Click to upload or drag and drop
-                            <br>
-                            <small>PNG, JPG, GIF, BMP or TIFF (preferably grayscale)</small>
-                        </label>
-                    </div>
+                            <div class="file-upload" id="fileUploadArea">
+                                <input type="file" id="fileInput" name="file" accept="image/*" onchange="handleFileSelect(event)">
+                                <label for="fileInput" class="file-upload-label" id="fileLabel">
+                                    Click to upload or drag and drop
+                                    <small>PNG, JPG, GIF, BMP, TIFF (any size)</small>
+                                </label>
+                            </div>
 
-                    <!-- Camera Mode -->
-                    <div id="cameraMode" class="hidden" style="text-align: center;">
-                        <video id="cameraVideo" style="width: 100%; max-width: 400px; border-radius: 8px; margin-bottom: 15px;"></video>
-                        <div class="form-row">
-                            <button type="button" class="btn-secondary" onclick="startCamera()" id="startCameraBtn">🎬 Start Camera</button>
-                            <button type="button" class="btn-primary" onclick="captureFromCamera()" id="captureBtn" disabled>📸 Capture</button>
+                            <div class="file-name" id="uploadFileName"></div>
                         </div>
-                        <p id="cameraStatus" style="margin-top: 10px; font-size: 12px; color: #666;"></p>
+
+                        <!-- Camera Panel -->
+                        <div class="panel" id="cameraPanel">
+                            <div class="panel-title">
+                                <span class="panel-icon">📷</span>
+                                <span>Camera Capture</span>
+                            </div>
+
+                            <div id="cameraContainer" style="display: none;">
+                                <video id="cameraVideo" playsinline muted autoplay></video>
+                            </div>
+
+                            <div id="noCameraPreview">
+                                📷 Camera preview will appear here
+                            </div>
+
+                            <div class="camera-controls">
+                                <button type="button" class="btn-secondary" id="startCameraBtn" onclick="startCamera()">🎬 Start Camera</button>
+                                <button type="button" class="btn-primary" id="captureBtn" onclick="captureFromCamera()" disabled>📸 Capture</button>
+                            </div>
+
+                            <div class="camera-status" id="cameraStatus">Ready to start</div>
+
+                            <div class="file-name" id="cameraFileName"></div>
+                        </div>
                     </div>
 
-                    <div class="file-name" id="fileName"></div>
+                    <!-- Preview Area -->
+                    <img id="imagePreview" class="image-preview" alt="Fingerprint Preview">
 
-                    <img id="imagePreview" class="image-preview" alt="Preview">
-
-                    <div class="form-row">
-                        <button type="button" class="btn-secondary" onclick="backToInfo()">Back</button>
-                        <button type="button" class="btn-primary" id="checkButton" onclick="submitForm()" disabled>Check Blood Group</button>
+                    <!-- Action Buttons -->
+                    <div class="form-row" style="margin-top: 25px;">
+                        <button type="button" class="btn-secondary" onclick="backToInfo()">← Back</button>
+                        <button type="button" class="btn-primary" id="checkButton" onclick="submitForm()" disabled>Analyze →</button>
                     </div>
                 </div>
 
                 <!-- Loading Section -->
                 <div class="loading" id="loadingSection">
                     <div class="spinner"></div>
-                    <p>Analyzing fingerprint...</p>
+                    <p>🔍 Analyzing fingerprint...<small>Smart thumb detection & AI prediction</small></p>
                 </div>
 
                 <!-- Results Section -->
                 <div class="result-container" id="resultSection">
                     <div class="result-card">
-                        <div class="result-title">Detection Results</div>
+                        <div class="result-title">✅ Detection Results</div>
 
                         <div class="result-item">
-                            <label>Predicted Blood Group:</label>
+                            <label>Blood Group:</label>
                             <span class="result-value" id="resultBloodGroup">--</span>
                         </div>
 
@@ -476,12 +650,11 @@
                         </div>
 
                         <div class="blood-group-display" id="bloodGroupBig">--</div>
-
                         <div class="confidence" id="confidenceText"></div>
                     </div>
 
-                    <div class="result-card" style="background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);">
-                        <div class="result-title">Personal Details</div>
+                    <div class="result-card">
+                        <div class="result-title">📋 Personal Details</div>
 
                         <div class="result-item">
                             <label>Name:</label>
@@ -510,7 +683,7 @@
                     </div>
 
                     <div class="button-group">
-                        <button type="button" class="btn-secondary" onclick="startNew()">Start New Test</button>
+                        <button type="button" class="btn-secondary" onclick="startNew()">🔄 Start New</button>
                         <button type="button" class="btn-primary" onclick="downloadReport()">📥 Download Report</button>
                     </div>
                 </div>
@@ -525,26 +698,24 @@
         const resultSection = document.getElementById('resultSection');
         const loadingSection = document.getElementById('loadingSection');
         const fileInput = document.getElementById('fileInput');
-        const fileLabel = document.getElementById('fileLabel');
-        const fileName = document.getElementById('fileName');
+        const fileUploadArea = document.getElementById('fileUploadArea');
         const imagePreview = document.getElementById('imagePreview');
         const errorMessage = document.getElementById('errorMessage');
-        const successMessage = document.getElementById('successMessage');
         const checkButton = document.getElementById('checkButton');
 
-        // Drag and drop functionality
-        fileLabel.addEventListener('dragover', (e) => {
+        // Drag and drop
+        fileUploadArea.addEventListener('dragover', (e) => {
             e.preventDefault();
-            fileLabel.classList.add('dragover');
+            fileUploadArea.classList.add('dragover');
         });
 
-        fileLabel.addEventListener('dragleave', () => {
-            fileLabel.classList.remove('dragover');
+        fileUploadArea.addEventListener('dragleave', () => {
+            fileUploadArea.classList.remove('dragover');
         });
 
-        fileLabel.addEventListener('drop', (e) => {
+        fileUploadArea.addEventListener('drop', (e) => {
             e.preventDefault();
-            fileLabel.classList.remove('dragover');
+            fileUploadArea.classList.remove('dragover');
             const files = e.dataTransfer.files;
             if (files.length > 0) {
                 fileInput.files = files;
@@ -552,60 +723,68 @@
             }
         });
 
+        // File Selection
         function handleFileSelect(event) {
             const files = event.target.files;
             if (files.length === 0) return;
 
             const file = files[0];
-            fileName.textContent = `✓ File selected: ${file.name}`;
-            fileName.classList.add('show');
 
-            // Show image preview
+            // Validate file size
+            if (file.size > 16 * 1024 * 1024) {
+                showError('File size must be less than 16MB');
+                return;
+            }
+
+            document.getElementById('uploadFileName').textContent = `✓ ${file.name}`;
+            document.getElementById('uploadFileName').classList.add('show');
+
+            // Preview
             const reader = new FileReader();
             reader.onload = (e) => {
                 imagePreview.src = e.target.result;
                 imagePreview.classList.add('show');
+                checkButton.disabled = false;
+            };
+            reader.onerror = () => {
+                showError('Failed to read file');
             };
             reader.readAsDataURL(file);
 
-            checkButton.disabled = false;
+            stopCamera();
         }
 
+        // Camera
         let cameraStream = null;
-        let currentImageSource = 'upload'; // track which mode is active
-
-        function switchImageSource() {
-            const source = document.querySelector('input[name="imageSource"]:checked').value;
-            currentImageSource = source;
-            
-            const uploadMode = document.getElementById('uploadMode');
-            const cameraMode = document.getElementById('cameraMode');
-            
-            if (source === 'camera') {
-                uploadMode.classList.add('hidden');
-                cameraMode.classList.remove('hidden');
-            } else {
-                uploadMode.classList.remove('hidden');
-                cameraMode.classList.add('hidden');
-                stopCamera();
-            }
-        }
 
         async function startCamera() {
             try {
                 document.getElementById('cameraStatus').textContent = '⏳ Requesting camera access...';
-                cameraStream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } }
+                document.getElementById('cameraStatus').classList.remove('success', 'error');
+                
+                cameraStream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        facingMode: 'environment',
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    }
                 });
+
                 const video = document.getElementById('cameraVideo');
                 video.srcObject = cameraStream;
-                video.play();
+
+                document.getElementById('noCameraPreview').style.display = 'none';
+                document.getElementById('cameraContainer').style.display = 'flex';
+
                 document.getElementById('startCameraBtn').disabled = true;
                 document.getElementById('captureBtn').disabled = false;
-                document.getElementById('cameraStatus').textContent = '✅ Camera ready. Frame your thumb and tap Capture.';
+                document.getElementById('cameraStatus').classList.add('success');
+                document.getElementById('cameraStatus').textContent = '✅ Camera active - Frame your thumb and capture';
+
             } catch (error) {
+                document.getElementById('cameraStatus').classList.add('error');
                 document.getElementById('cameraStatus').textContent = `❌ ${error.message}`;
-                showError('Camera access denied. Please use Upload mode.');
+                showError('Camera access denied or unavailable');
             }
         }
 
@@ -614,21 +793,31 @@
                 cameraStream.getTracks().forEach(track => track.stop());
                 cameraStream = null;
             }
-            document.getElementById('captureBtn').disabled = true;
+
+            document.getElementById('cameraContainer').style.display = 'none';
+            document.getElementById('noCameraPreview').style.display = 'block';
             document.getElementById('startCameraBtn').disabled = false;
-            document.getElementById('cameraStatus').textContent = '';
+            document.getElementById('captureBtn').disabled = true;
+            document.getElementById('cameraStatus').classList.remove('success', 'error');
+            document.getElementById('cameraStatus').textContent = 'Ready to start';
         }
 
         function captureFromCamera() {
             const video = document.getElementById('cameraVideo');
+
+            if (video.videoWidth === 0 || video.videoHeight === 0) {
+                showError('Camera stream not ready yet');
+                return;
+            }
+
             const canvas = document.createElement('canvas');
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
-            
+
             const ctx = canvas.getContext('2d');
             ctx.drawImage(video, 0, 0);
-            
-            // Convert to grayscale
+
+            // Grayscale
             const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
             const data = imageData.data;
             for (let i = 0; i < data.length; i += 4) {
@@ -636,27 +825,40 @@
                 data[i] = data[i + 1] = data[i + 2] = gray;
             }
             ctx.putImageData(imageData, 0, 0);
-            
-            // Create a dummy file object from canvas
+
+            // Convert to file
             canvas.toBlob((blob) => {
-                const file = new File([blob], 'camera_capture.png', { type: 'image/png' });
-                fileInput.files = new DataTransfer().items.add(file) || { 0: file, length: 1 };
-                
-                // Simulate file selection
-                fileName.textContent = '✓ Camera capture: ' + new Date().toLocaleTimeString();
-                fileName.classList.add('show');
-                
+                if (!blob) {
+                    showError('Failed to capture image');
+                    return;
+                }
+
+                try {
+                    const dt = new DataTransfer();
+                    const file = new File([blob], `camera_${Date.now()}.png`, { type: 'image/png' });
+                    dt.items.add(file);
+                    fileInput.files = dt.files;
+                } catch (e) {
+                    // Fallback for older browsers
+                    const file = new File([blob], `camera_${Date.now()}.png`, { type: 'image/png' });
+                    fileInput.files = { 0: file, length: 1 };
+                }
+
+                document.getElementById('cameraFileName').textContent = `✓ Captured: ${new Date().toLocaleTimeString()}`;
+                document.getElementById('cameraFileName').classList.add('show');
+
                 imagePreview.src = canvas.toDataURL();
                 imagePreview.classList.add('show');
-                
+
                 checkButton.disabled = false;
-                document.getElementById('cameraStatus').textContent = '✅ Image captured! Tap "Check Blood Group" to analyze.';
-                
+                document.getElementById('cameraStatus').classList.add('success');
+                document.getElementById('cameraStatus').textContent = '✅ Image captured! Ready to analyze';
+
                 stopCamera();
-                switchImageSource(); // Switch back to show preview
-            });
+            }, 'image/png');
         }
 
+        // Navigation
         function proceedToUpload() {
             const name = document.getElementById('name').value.trim();
             const age = document.getElementById('age').value.trim();
@@ -664,7 +866,7 @@
             const contact = document.getElementById('contact').value.trim();
 
             if (!name || !age || !gender || !contact) {
-                showError('Please fill in all required fields');
+                showError('Please fill all required fields');
                 return;
             }
 
@@ -678,11 +880,13 @@
             uploadSection.classList.add('hidden');
             personalInfoSection.classList.remove('hidden');
             updateSteps(1);
+            stopCamera();
         }
 
+        // Submission
         function submitForm() {
             if (!fileInput.files || fileInput.files.length === 0) {
-                showError('Please select an image file');
+                showError('Please select or capture an image');
                 return;
             }
 
@@ -704,7 +908,7 @@
                 .then(response => {
                     if (!response.ok) {
                         return response.text().then(text => {
-                            throw new Error(`Server error (${response.status}): ${text.substring(0, 100)}`);
+                            throw new Error(`Server error (${response.status})`);
                         });
                     }
                     return response.json();
@@ -715,23 +919,24 @@
                         displayResults(data);
                         updateSteps(3);
                     } else {
-                        showError(data.error || 'Prediction failed');
+                        showError(data.error || 'Prediction failed. Please try again.');
                         uploadSection.classList.remove('hidden');
                     }
                 })
                 .catch(error => {
                     loadingSection.classList.remove('show');
-                    showError('Error: ' + error.message);
+                    showError(`Error: ${error.message}`);
                     uploadSection.classList.remove('hidden');
                     console.error('Fetch error:', error);
                 });
         }
 
+        // Results
         function displayResults(data) {
             document.getElementById('resultBloodGroup').textContent = data.blood_group;
             document.getElementById('resultConfidence').textContent = data.confidence;
             document.getElementById('bloodGroupBig').textContent = data.blood_group;
-            document.getElementById('confidenceText').textContent = `Confidence: ${data.confidence}`;
+            document.getElementById('confidenceText').textContent = `Confidence Score: ${data.confidence}`;
             document.getElementById('resultName').textContent = data.name;
             document.getElementById('resultAge').textContent = data.age;
             document.getElementById('resultGender').textContent = data.gender;
@@ -746,12 +951,14 @@
             fileInput.value = '';
             imagePreview.src = '';
             imagePreview.classList.remove('show');
-            fileName.classList.remove('show');
+            document.getElementById('uploadFileName').classList.remove('show');
+            document.getElementById('cameraFileName').classList.remove('show');
             resultSection.classList.remove('show');
             personalInfoSection.classList.remove('hidden');
             checkButton.disabled = true;
             updateSteps(1);
             clearError();
+            stopCamera();
         }
 
         function downloadReport() {
@@ -765,13 +972,13 @@
 
             const reportContent = `
 BLOOD GROUP DETECTION REPORT
-============================
+=============================
 Generated: ${timestamp}
 
 DETECTION RESULTS
 -----------------
 Predicted Blood Group: ${bloodGroup}
-Confidence: ${confidence}
+Confidence Score: ${confidence}
 
 PERSONAL DETAILS
 ----------------
@@ -780,22 +987,24 @@ Age: ${age}
 Gender: ${gender}
 Contact: ${contact}
 
-Note: This report is generated by Fingerprint Based Blood Group Detection System.
-Please consult a medical professional for clinical purposes.
+METHOD: Fingerprint-based AI analysis with smart thumb detection
+NOTE: For medical purposes, please consult a qualified healthcare professional.
             `.trim();
 
             const blob = new Blob([reportContent], { type: 'text/plain' });
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `Blood_Group_Report_${Date.now()}.txt`;
+            a.download = `BloodGroup_Report_${Date.now()}.txt`;
             a.click();
             window.URL.revokeObjectURL(url);
         }
 
+        // UI Helpers
         function showError(message) {
             errorMessage.textContent = message;
             errorMessage.classList.add('show');
+            setTimeout(() => clearError(), 5000);
         }
 
         function clearError() {
@@ -805,12 +1014,15 @@ Please consult a medical professional for clinical purposes.
         function updateSteps(currentStep) {
             document.getElementById('step1').classList.toggle('active', currentStep === 1);
             document.getElementById('step1').classList.toggle('completed', currentStep > 1);
-
             document.getElementById('step2').classList.toggle('active', currentStep === 2);
             document.getElementById('step2').classList.toggle('completed', currentStep > 2);
-
             document.getElementById('step3').classList.toggle('active', currentStep === 3);
         }
+
+        // Handle page unload to clean up camera
+        window.addEventListener('beforeunload', () => {
+            stopCamera();
+        });
     </script>
 </body>
 </html>
